@@ -1,0 +1,24 @@
+An open circuit:          00 fe 00 00 fe 00 18 e0 80 86 7e f8 e6 98 7e e6 1e 7e 7e 98 e0 60 f8 78 fe 
+A closed circuit:         00 fe 00 00 fe 00 18 e0 80 86 1e f8 f8 98 78 e6 78 7e 7e 18 78 f8 98 e6
+
+A 0hz circuit:            00 fe 00 00 fe 80 fe 1e e0 00 f8 7e f8 e6 98 fe e6 e6 9e 7e fe e6 e0 7e f8 e6 e6
+
+A dynamic voltage:        00 fe 00 1e fe 00
+
+A constant 79F:           00 fe 00 00 fe 00 18 e0 00 f8 7e f8 e6 98 06 e6 66 7e f8 fe fe e0 7e f8 18 fe
+A constant 78F:           00 fe 00 00 fe 00 18 e0 00 f8 7e f8 e6 98 06 e6 66 7e 7e fe [] e0 7e f8 18 fe
+A constant 622F:          00 fe 00 00 fe 00 18 e0 00 f8 7e f8 f8 98 66 e6 9e 9e 66 fe 9e e0 7e f8 18 fe
+A constant 26C:           00 fe 00 00 fe 00 18 e0 00 f8 7e f8 e6 98 66 e6 9e 9e 7e fe f8 e0 7e f8 80 e6
+A constant 25C:           00 fe 00 00 fe 00 18 e0 00 f8 7e f8 e6 98 66 e6 9e 9e 1e fe f8 e0 7e f8 80 e6
+A constant 328C:          00 00 fe 00 18 e0 00 f8 06 f8 fe 98 66 e6 9e 9e 7e fe fe [   ] e0 7e f8 80 e6
+A constant 327C:          00 00 fe 00 18 e0 00 f8 06 f8 fe 98 66 e6 9e 9e 06 fe 66 [      ] 7e f8 80 e6
+
+A constant 68.7 kOhm:     00 fe 00 00 fe 78 1e e0 00 f8 7e f8 e6 98 7e e6 f8 9e 7e fe fe e0 86 f8 66 fe
+A constant 000.5 Ohm:     00 fe 00 00 fe 60 1e e0 00 f8 7e f8 e6 98 7e e6 e6 9e 7e fe e6 e0 9e f8 f8 e6
+A constant 001.4 Ohm:     00 fe 00 00 fe 60 1e e0 00 f8 7e f8 e6 98 7e e6 e6 9e 00 fe 66 98 f8 7e fe
+A constant 000.0 Ohm:     00 fe 00 00 fe 60 18 e0 00 f8 7e f8 e6 98 7e e6 e6 9e 7e fe e6 e0 fe f8 e6 e6
+A constant 0.000 kOhm:    00 fe 00 00 fe 78 18 e0 00 f8 7e f8 e6 98 fe e6 e6 9e 7e fe e6 e0 7e f8 e6 e6
+A constant 00.00 kOhm:    00 fe 00 00 fe 78 18 e0 00 f8 7e f8 e6 98 7e e6 e6 9e fe fe e6 e0 7e f8 e6 e6
+A constant 000.0 kOhm:    00 fe 00 00 fe 78 18 e0 00 f8 7e f8 e6 98 7e e6 e6 9e 7e fe e6 e0 fe f8 e6 e6
+A constant 0.000 mOhm:    00 fe 00 00 fe 66 18 e0 00 f8 7e f8 e6 98 fe e6 e6 9e 7e fe e6 e0 7e f8 e6 e6
+A constant 00.00 mOhm:    00 fe 00 00 fe 66 18 e0 00 f8 7e f8 e6 98 7e e6 e6 9e fe fe e6 e0 7e f8 e6 e6
