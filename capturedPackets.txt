@@ -22,3 +22,5 @@ A constant 00.00 kOhm:    00 fe 00 00 fe 78 18 e0 00 f8 7e f8 e6 98 7e e6 e6 9e 
 A constant 000.0 kOhm:    00 fe 00 00 fe 78 18 e0 00 f8 7e f8 e6 98 7e e6 e6 9e 7e fe e6 e0 fe f8 e6 e6
 A constant 0.000 mOhm:    00 fe 00 00 fe 66 18 e0 00 f8 7e f8 e6 98 fe e6 e6 9e 7e fe e6 e0 7e f8 e6 e6
 A constant 00.00 mOhm:    00 fe 00 00 fe 66 18 e0 00 f8 7e f8 e6 98 7e e6 e6 9e fe fe e6 e0 7e f8 e6 e6
+
+Note: [    ] is just added whitespace. When testing data and observing data over serial, delete the [   ]. It has simply been added to allow lining up bytes in packets of varying lengths.
