@@ -21,5 +21,4 @@
 All bytes are sent over in hexadecimal numbered one through fourteen. Bytes 3-4 contain digit 4, bytes 5-6 contain digit 3 and so on. All other parts of the display are turned on as shown in the above table. 
 
 ![Number](https://cloud.githubusercontent.com/assets/5304541/6250379/6ab9de40-b75b-11e4-9444-c7d69e58e5ff.png)
-
 ![Display](https://cloud.githubusercontent.com/assets/5304541/6250469/03216f4a-b75c-11e4-92eb-9b6d7568b3a8.png)
