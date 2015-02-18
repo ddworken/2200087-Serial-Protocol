@@ -155,6 +155,60 @@ def is0(digitDict):
         return True
     return False
 
+
+def strToFlags(strOfBytes):
+    flags = []
+    binArr = getArrFromStr(strOfBytes)
+    for index,binStr in enumerate(binArr):
+        binArr[index] = binStr[::-1]
+    if binArr[0][2] == '1':
+        flags.append('AC')
+    #if binArr[0][1] == '1': ###Don't display this because it will always be on since whenever we are getting input, it will be on.
+    #   flags.append('SEND')
+    if binArr[0][0] == '1':
+        flags.append('AUTO')
+    if binArr[1][3] == '1':
+        flags.append('CONTINUITY')
+    if binArr[1][2] == '1':
+        flags.append('DIODE')
+    if binArr[1][1] == '1':
+        flags.append('LOW BATTERY')
+    if binArr[1][0] == '1':
+        flags.append('HOLD')
+    if binArr[10][0] == '1':
+        flags.append('MIN')
+    if binArr[10][1] == '1':
+        flags.append('REL DELTA')
+    if binArr[10][2] == '1':
+        flags.append('HFE')
+    if binArr[10][3] == '1':
+        flags.append('Percent')
+    if binArr[11][0] == '1':
+        flags.append('SECONDS')
+    if binArr[11][1] == '1':
+        flags.append('dBm')
+    if binArr[11][2] == '1':
+        flags.append('n (1e-9)')
+    if binArr[11][3] == '1':
+        flags.append('u (1e-6)')
+    if binArr[12][0] == '1':
+        flags.append('m (1e-3)')
+    if binArr[12][1] == '1':
+        flags.append('VOLTS')
+    if binArr[12][2] == '1':
+        flags.append('AMPS')
+    if binArr[12][3] == '1':
+        flags.append('FARADS')
+    if binArr[13][0] == '1':
+        flags.append('M (1e6)')
+    if binArr[13][1] == '1':
+        flags.append('K (1e3)')
+    if binArr[13][2] == '1':
+        flags.append('OHMS')
+    if binArr[13][3] == '1':
+        flags.append('Hz')
+    return flags
+
 def strToDigits(strOfBytes):
     binArr = getArrFromStr(strOfBytes)
     digits = ""
@@ -164,9 +218,10 @@ def strToDigits(strOfBytes):
             digits += "."
         digits += str(out[1])
     return digits
+
 def mainLoop(inputs):
     for item in inputs:
-        print strToDigits(item)
+        print strToDigits(item) + ' ' + ' '.join(strToFlags(item))
 
 if __name__ == '__main__':
     inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0"]
