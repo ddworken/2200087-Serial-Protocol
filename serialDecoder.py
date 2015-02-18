@@ -62,6 +62,20 @@ def getIntFromDigitDict(digitDict):
         return 1
     if is0(digitDict):
         return 0
+    if isC(digitDict):
+        return 'C'
+    if isF(digitDict):
+        return 'F'
+
+def isF(digitDict):
+    if digitDict['A'] == 1 and digitDict['F'] == 1 and digitDict['G'] == 1 and digitDict['B'] == 0 and digitDict['C'] == 0 and digitDict['D'] == 0 and digitDict['E'] == 1:
+        return True
+    return False
+
+def isC(digitDict):
+    if digitDict['A'] == 1 and digitDict['F'] == 1 and digitDict['G'] == 0 and digitDict['B'] == 0 and digitDict['C'] == 0 and digitDict['D'] == 1 and digitDict['E'] == 1:
+        return True
+    return False
 
 def is9(digitDict):
     if digitDict['A'] == 1 and digitDict['F'] == 1 and digitDict['G'] == 1 and digitDict['B'] == 1 and digitDict['C'] == 1 and digitDict['D'] == 1 and digitDict['E'] == 0:
@@ -114,7 +128,7 @@ def is0(digitDict):
     return False
 
 def strToDigits(strOfBytes):
-    binArr = getArrFromStr(input)
+    binArr = getArrFromStr(strOfBytes)
     digits = ""
     for number in reversed(range(1,5)):
         out = processDigit(number,binArr)
@@ -122,6 +136,10 @@ def strToDigits(strOfBytes):
             digits += "."
         digits += str(out[1])
     return digits
+def mainLoop(inputs):
+    for item in inputs:
+        print strToDigits(item)
 
-input = "12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0"
-print strToDigits(input)
+if __name__ == '__main__':
+    inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0"]
+    mainLoop(inputs)
