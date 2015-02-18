@@ -66,6 +66,34 @@ def getIntFromDigitDict(digitDict):
         return 'C'
     if isF(digitDict):
         return 'F'
+    if isE(digitDict):
+        return 'E'
+    if isP(digitDict):
+        return 'P'
+    if isN(digitDict):
+        return 'N'
+    if isL(digitDict):
+        return 'L'
+
+def isE(digitDict):
+    if digitDict['A'] == 1 and digitDict['F'] == 1 and digitDict['G'] == 1 and digitDict['B'] == 0 and digitDict['C'] == 0 and digitDict['D'] == 1 and digitDict['E'] == 1:
+        return True
+    return False
+
+def isN(digitDict):
+    if digitDict['A'] == 0 and digitDict['F'] == 0 and digitDict['G'] == 1 and digitDict['B'] == 0 and digitDict['C'] == 1 and digitDict['D'] == 0 and digitDict['E'] == 1:
+        return True
+    return False
+
+def isL(digitDict):
+    if digitDict['A'] == 0 and digitDict['F'] == 1 and digitDict['G'] == 0 and digitDict['B'] == 0 and digitDict['C'] == 0 and digitDict['D'] == 1 and digitDict['E'] == 1:
+        return True
+    return False
+
+def isP(digitDict):
+    if digitDict['A'] == 1 and digitDict['F'] == 1 and digitDict['G'] == 1 and digitDict['B'] == 1 and digitDict['C'] == 0 and digitDict['D'] == 0 and digitDict['E'] == 1:
+        return True
+    return False
 
 def isF(digitDict):
     if digitDict['A'] == 1 and digitDict['F'] == 1 and digitDict['G'] == 1 and digitDict['B'] == 0 and digitDict['C'] == 0 and digitDict['D'] == 0 and digitDict['E'] == 1:
