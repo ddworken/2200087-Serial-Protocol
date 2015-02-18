@@ -1,6 +1,5 @@
 2200087-Serial-Protocol
 =======================
-
 |         | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3      | Bit 2    | Bit 1     | Bit 0    | 
 |---------|-------|-------|-------|-------|------------|----------|-----------|----------| 
 | Byte 1  | 0     | 0     | 0     | 1     | Minus      | AC       | SEND      | AUTO     | 
@@ -22,3 +21,7 @@ All bytes are sent over in hexadecimal numbered one through fourteen. Bytes 3-4 
 
 ![Number](https://cloud.githubusercontent.com/assets/5304541/6250379/6ab9de40-b75b-11e4-9444-c7d69e58e5ff.png)
 ![Display](https://cloud.githubusercontent.com/assets/5304541/6250469/03216f4a-b75c-11e4-92eb-9b6d7568b3a8.png)
+
+========================
+
+serialDecoder.py is a python program to decode the serial output from this DMM. It depends on bitstring, so run ```pip install bitstring``` before trying to run it. 
