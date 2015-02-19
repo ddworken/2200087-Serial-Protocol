@@ -1,8 +1,8 @@
 #/bin/python
 
-from bitstring import BitArray
+from bitstring import BitArray #Used to convert hexadecimal bytes to binary
 
-def getArrFromStr(serialData):
+def getArrFromStr(serialData): #converts serial data to an array of strings each of which is a binary representation of a single byte
     output = []
     inputList = serialData.split(" ")
     for index,value in enumerate(inputList):
@@ -13,7 +13,7 @@ def getArrFromStr(serialData):
 
 def processDigit(digitNumber, binArray):
     decimalPointBool = False
-    digitValue = -1
+    digitValue = -1 #Allows easy detection of failed digit detection
     bin = []
     if digitNumber == 4:
         bin.append(binArray[2][::-1]) #reverse it because we want to start with bit 0, not bit 7
@@ -28,20 +28,20 @@ def processDigit(digitNumber, binArray):
         bin.append(binArray[8][::-1]) #reverse it because we want to start with bit 0, not bit 7
         bin.append(binArray[9][::-1]) #reverse it because we want to start with bit 0, not bit 7
     digitDict = {}
-    digitDict['A'] = int(bin[0][0])
+    digitDict['A'] = int(bin[0][0]) #Creates a dictionary where the key;s follow the protocol description in readme.md
     digitDict['F'] = int(bin[0][1])
     digitDict['E'] = int(bin[0][2])
     digitDict['B'] = int(bin[1][0])
     digitDict['G'] = int(bin[1][1])
     digitDict['C'] = int(bin[1][2])
     digitDict['D'] = int(bin[1][3])
-    digitValue = getIntFromDigitDict(digitDict)
-    decimalPointBool = bool(int(bin[0][3]))
-    if digitNumber == 4:
+    digitValue = getCharFromDigitDict(digitDict) #passes the digit dict to getCharFromDigitDict to decode what the value is
+    decimalPointBool = bool(int(bin[0][3])) #checks if there should be a decimal point
+    if digitNumber == 4: #if it is digit 4, a decimal point actually means MAX not decimal point (see readme.md for full description of protocol)
         decimalPointBool = False
-    return (decimalPointBool, digitValue)
+    return (decimalPointBool, digitValue) #Returns a tuple containing both whether or not to include a decimal point and the digit on the display
 
-def getIntFromDigitDict(digitDict):
+def getCharFromDigitDict(digitDict): #Returns a char based off of the digitDictionary sent to it
     if is9(digitDict):
         return 9
     if is8(digitDict):
@@ -74,6 +74,9 @@ def getIntFromDigitDict(digitDict):
         return 'N'
     if isL(digitDict):
         return 'L'
+
+#All of these is*(digitDict) methods are essentially implementing a bitmask to convert a series of bits into characters or numbers
+#While this is a horrible format, it works and is unlikely to be changed as switching to a more traditional bitmask is not that advantageous
 
 def isE(digitDict):
     if digitDict['A'] == 1 and digitDict['F'] == 1 and digitDict['G'] == 1 and digitDict['B'] == 0 and digitDict['C'] == 0 and digitDict['D'] == 1 and digitDict['E'] == 1:
@@ -156,7 +159,7 @@ def is0(digitDict):
     return False
 
 
-def strToFlags(strOfBytes):
+def strToFlags(strOfBytes): #Checks all possible flags that might be needed and returns a list containing all currently active flags
     flags = []
     binArr = getArrFromStr(strOfBytes)
     for index,binStr in enumerate(binArr):
@@ -209,23 +212,26 @@ def strToFlags(strOfBytes):
         flags.append('Hz')
     return flags
 
-def strToDigits(strOfBytes):
-    binArr = getArrFromStr(strOfBytes)
+def strToDigits(strOfBytes): #converts a string of space separated hexadecimal bytes into numbers following the protocol in readme.md
+    binArr = getArrFromStr(strOfBytes) #Create an array of the binary values from those hexadecimal bytes
     digits = ""
-    for number in reversed(range(1,5)):
+    for number in reversed(range(1,5)): #reversed rabge so that we iterate through values 4,3,2,1 in that order due to how serial protocol works (see readme.md)
         out = processDigit(number,binArr)
-        if out[0] == True:
+        if out[1] == -1:
+            print("Protocol Error: Please start an issue here: https://github.com/ddworken/2200087-Serial-Protocol/issues and include the following data: '" + strOfBytes + "'")
+            exit(1)
+        if out[0] == True: #append the decimal point if the decimalPointBool in the tuple is true
             digits += "."
         digits += str(out[1])
-    minusBool = bool(int(binArr[0][::-1][3]))
+    minusBool = bool(int(binArr[0][::-1][3])) #following the serial protocol, calculate whether or not a negative sign is needed
     if minusBool:
         digits = '-' + digits
     return digits
 
 def mainLoop(inputs):
     for item in inputs:
-        print strToDigits(item) + ' ' + ' '.join(strToFlags(item))
+        print strToDigits(item) + ' ' + ' '.join(strToFlags(item)) #join together the value (strToDigits), and the flags (strToFlags) with spaces to make it easily understandable by the end user
 
-if __name__ == '__main__':
-    inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0", "1A 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0"]
-    mainLoop(inputs)
+if __name__ == '__main__': #Allows for usage of above methods in a library
+    inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0", "1A 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0"] #Three sample outputs from serial (0.485 VOLTS;-0.485 VOLTS;025C )
+    mainLoop(inputs) #Call the mainLoop method with a list containing serial data
