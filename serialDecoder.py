@@ -217,6 +217,9 @@ def strToDigits(strOfBytes):
         if out[0] == True:
             digits += "."
         digits += str(out[1])
+    minusBool = bool(int(binArr[0][::-1][3]))
+    if minusBool:
+        digits = '-' + digits
     return digits
 
 def mainLoop(inputs):
@@ -224,5 +227,5 @@ def mainLoop(inputs):
         print strToDigits(item) + ' ' + ' '.join(strToFlags(item))
 
 if __name__ == '__main__':
-    inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0"]
+    inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0", "1A 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0"]
     mainLoop(inputs)
