@@ -6,7 +6,7 @@ def getArrFromStr(serialData): #converts serial data to an array of strings each
     output = []
     inputList = serialData.split(" ")
     for index,value in enumerate(inputList):
-        inputList[index] = '0x' + value
+        inputList[index] = '0x' + value #Prepend '0x' so that the BitArray library will interpret it as a hexadecimal byte
     for value in inputList:
         output.append(BitArray(hex=value).bin)
     return output
