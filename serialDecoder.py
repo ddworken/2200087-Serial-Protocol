@@ -1,14 +1,13 @@
 #/bin/python
 
-from bitstring import BitArray #Used to convert hexadecimal bytes to binary
-
 def getArrFromStr(serialData): #converts serial data to an array of strings each of which is a binary representation of a single byte
     output = []
     inputList = serialData.split(" ")
-    for index,value in enumerate(inputList):
-        inputList[index] = '0x' + value #Prepend '0x' so that the BitArray library will interpret it as a hexadecimal byte
     for value in inputList:
-        output.append(BitArray(hex=value).bin)
+        binStr = bin(int(value, base=16))[2:] #The [2:] removes the first 2 characters so as to trim off the 0b
+        for i in range(8-len(binStr)):#we add enough 0s to the front in order to make it 8 bytes (since bin() trims off zeros in the start)
+            binStr = '0' + binStr
+        output.append(binStr)
     return output
 
 def processDigit(digitNumber, binArray):
