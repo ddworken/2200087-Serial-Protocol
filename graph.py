@@ -8,9 +8,10 @@ class grapher(object):
     graphOutput = []
     x = []
     y = []    
+    graphSize = 10
 
     def __init__(self, y):
-        for i in range(10):
+        for i in range(self.graphSize):
             self.x.append(i)
         self.y = y
         self.update(self.x,self.y)
