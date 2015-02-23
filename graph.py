@@ -9,12 +9,12 @@ class grapher(object):
     x = []
     y = []    
 
-    def __init__(self, x, y):
-        self.update(x,y)
-        self.graphOutput = self.getGraph()
-        self.x = x
+    def __init__(self, y):
+        for i in range(10):
+            self.x.append(i)
         self.y = y
-
+        self.update(self.x,self.y)
+        self.graphOutput = self.getGraph()
 
     def update(self, x, y):
         self.gnuplot = subprocess.Popen(["/usr/bin/gnuplot"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -39,21 +39,25 @@ class grapher(object):
     def getValues(self):
         return zip(self.x,self.y)
 
-    def append(self, xVal, yVal):
-        self.x = np.append(self.x, xVal)
-        self.y = np.append(self.y, yVal)
+    def append(self, yVal):
+        print self.y
+        if len(self.x) == len(self.y):
+            tempX = self.x
+            tempY = self.y
+            del self.y[0]
+            self.y = np.append(tempY, yVal)
+        else:
+            if len(self.x) > len(self.y):
+                self.y = np.append(self.y, yVal)
+        print self.y
         self.update(self.x, self.y)        
 
-
-x=np.linspace(0,2*np.pi,10)
-y=np.sin(x)
-grapher = grapher(x,y)
+y=[0,1]
+grapher = grapher(y)
 graph = grapher.getGraph()
 for line in graph:
     print line
-grapher.append(1,2)
+grapher.append(.5)
 graph = grapher.getGraph()
 for line in graph:
     print line
-print grapher.getValues()
-root@ddworken:~/dmm2# 
