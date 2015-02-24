@@ -1,6 +1,62 @@
-#/bin/python
+import numpy as np
+import subprocess
+from random import *
+from time import sleep
+import serial
+import argparse
+
 
 serialPort = '/dev/ttyUSB1'
+
+class grapher(object):
+    np = __import__('numpy')
+    subprocess = __import__('subprocess')
+    graphOutput = []
+    x = []
+    y = []    
+    graphSize = 30
+
+    def __init__(self, y):
+        for i in range(self.graphSize):
+            self.x.append(i)
+        #print self.x
+        self.y = y
+        self.update(self.x,self.y)
+        self.graphOutput = self.getGraph()
+
+    def update(self, x, y):
+        self.gnuplot = subprocess.Popen(["/usr/bin/gnuplot"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        self.gnuplot.stdin.write("set term dumb 150 25\n")
+        self.gnuplot.stdin.write("plot '-' using 1:2 title 'Line1' with linespoints \n")
+        for i,j in zip(x,y):
+            self.gnuplot.stdin.write("%f %f\n" % (i,j))    
+        self.gnuplot.stdin.write("e\n")
+        self.gnuplot.stdin.flush()
+        i = 0
+        output = []
+        while self.gnuplot.poll() is None:
+            output.append(self.gnuplot.stdout.readline())
+            i+=1
+            if i == 24:
+                break
+        self.graphOutput = output
+
+    def getGraph(self):
+        return self.graphOutput
+
+    def getValues(self):
+        return zip(self.x,self.y)
+
+    def append(self, yVal):
+        if len(self.x) == len(self.y):
+            tempX = self.x
+            tempY = self.y
+            self.y = np.delete(self.y, 0)
+            self.y = np.append(self.y, yVal)
+        else:
+            if len(self.x) > len(self.y):
+                self.y = np.append(self.y, yVal)
+        self.update(self.x, self.y)        
 
 def getArrFromStr(serialData): #converts serial data to an array of strings each of which is a binary representation of a single byte
     output = []
@@ -229,15 +285,20 @@ def strToDigits(strOfBytes): #converts a string of space separated hexadecimal b
         digits = '-' + digits
     return digits
 
-def mainLoop(inputs):
-    import serial
-    ser = serial.Serial(port=serialPort, baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
-
-    y=[0,1]
+def mainLoop(args):
+    ser = serial.Serial(port=args.port, baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+    global grapher 
+    y = [0]
+    grapher = grapher(y)
     while(True):
-	    chunk = getSerialChunk(ser)
-	    print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
-
+        chunk = getSerialChunk(ser)
+        if graph:
+	    grapher.append(float(strToDigits(chunk)))
+	    graph = grapher.getGraph()
+	    for line in graph:
+	        print line
+	else:
+	     print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
 
 def getSerialChunk(ser):
     while True:
@@ -255,5 +316,8 @@ def getSerialChunk(ser):
         return " ".join(chunk)
 
 if __name__ == '__main__': #Allows for usage of above methods in a library
-    inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0", "1A 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0", "13 20 37 4d 57 6d 77 8d 9d ab b0 c0 d3 e0"] #Three sample outputs from serial (0.485 VOLTS;-0.485 VOLTS;025C )
-    mainLoop(inputs) #Call the mainLoop method with a list containing serial data
+    parser = argparse.ArgumentParser()
+    parser.add_argument("graph", help="Use this argument if you want to display a graph. ")
+    parser.add_argument("-p", "--port", help="The serial port to use", default="/dev/ttyUSB0")
+    args = parser.parse_args()
+    mainLoop(args) #Call the mainLoop method with a list containing serial data
