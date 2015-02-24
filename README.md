@@ -24,4 +24,16 @@ All bytes are sent over in hexadecimal numbered one through fourteen. Bytes 3-4 
 
 ========================
 
-serialDecoder.py is a python program to decode the serial output from this DMM. 
+serialDecoder.py is a python program to decode the serial output from this DMM. Run:
+
+```bash
+sudo python serialDecoder.py -p /dev/ttyUSB0
+```
+
+to display a text output of the data. Run:
+
+```bash
+sudo python serialDecoder.py -p /dev/ttyUSB0 graph
+```
+
+to display a graph of the data. 
