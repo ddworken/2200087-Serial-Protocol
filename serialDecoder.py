@@ -11,18 +11,19 @@ class grapher(object):
     graphOutput = []
     x = []
     y = []    
-    graphSize = 30
+    graphSize = 100
 
     def __init__(self, y):
         for i in range(self.graphSize):
             self.x.append(i)
-        #print self.x
         self.y = y
         self.update(self.x,self.y)
         self.graphOutput = self.getGraph()
 
     def update(self, x, y):
-        self.gnuplot = subprocess.Popen(["/usr/bin/gnuplot"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        self.x = x
+	self.y = y
+	self.gnuplot = subprocess.Popen(["/usr/bin/gnuplot"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         self.gnuplot.stdin.write("set term dumb 150 25\n")
         self.gnuplot.stdin.write("plot '-' using 1:2 title 'Line1' with linespoints \n")
         for i,j in zip(x,y):
@@ -37,6 +38,26 @@ class grapher(object):
             if i == 24:
                 break
         self.graphOutput = output
+
+    def updateWithLabel(self, x, y, label):
+        self.x = x
+        self.y = y
+        self.gnuplot = subprocess.Popen(["/usr/bin/gnuplot"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        self.gnuplot.stdin.write("set term dumb 150 25\n")
+        self.gnuplot.stdin.write("plot '-' using 1:2 title '" + label + "' with linespoints \n")
+        for i,j in zip(x,y):
+            self.gnuplot.stdin.write("%f %f\n" % (i,j))
+        self.gnuplot.stdin.write("e\n")
+        self.gnuplot.stdin.flush()
+        i = 0
+        output = []
+        while self.gnuplot.poll() is None:
+            output.append(self.gnuplot.stdout.readline())
+            i+=1
+            if i == 24:
+                break
+        self.graphOutput = output
+
 
     def getGraph(self):
         return self.graphOutput
@@ -53,7 +74,19 @@ class grapher(object):
         else:
             if len(self.x) > len(self.y):
                 self.y = np.append(self.y, yVal)
-        self.update(self.x, self.y)        
+        self.update(self.x, self.y)  
+
+    def appendWithLabel(self, yVal,label):
+        if len(self.x) == len(self.y):
+            tempX = self.x
+            tempY = self.y
+            self.y = np.delete(self.y, 0)
+            self.y = np.append(self.y, yVal)
+        else:
+            if len(self.x) > len(self.y):
+                self.y = np.append(self.y, yVal)
+        self.updateWithLabel(self.x, self.y, label)
+      
 
 def getArrFromStr(serialData): #converts serial data to an array of strings each of which is a binary representation of a single byte
     output = []
@@ -289,12 +322,25 @@ def mainLoop(args):
     grapher = grapher(y)
     while(True):
         chunk = getSerialChunk(ser)
-        if graph:
-            grapher.append(float(strToDigits(chunk)))
-            graph = grapher.getGraph()
-            for line in graph:
-                print line
-        else:
+        if args.graph:
+	    try:
+	        floatVal = float(strToDigits(chunk))
+                grapher.appendWithLabel(floatVal, ' '.join(strToFlags(chunk)))
+                graph = grapher.getGraph()
+                for line in graph:
+                    print line
+            except:
+		print strToDigits(chunk)[-1]
+		try:
+		    if strToDigits(chunk)[-1] == 'C' or strToDigits(chunk)[-1] == 'F':
+			floatVal = float(strToDigits(chunk)[0:-1])
+                	grapher.appendWithLabel(floatVal, ' '.join(strToFlags(chunk)))
+                	graph = grapher.getGraph()
+                	for line in graph:
+                	    print line
+		except:
+		    pass
+	else:
             print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
 
 def getSerialChunk(ser):
