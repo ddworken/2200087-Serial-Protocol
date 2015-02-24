@@ -228,9 +228,30 @@ def strToDigits(strOfBytes): #converts a string of space separated hexadecimal b
     return digits
 
 def mainLoop(inputs):
-    for item in inputs:
-        print strToDigits(item) + ' ' + ' '.join(strToFlags(item)) #join together the value (strToDigits), and the flags (strToFlags) with spaces to make it easily understandable by the end user
+    import serial
+    ser = serial.Serial(port='/dev/ttyUSB1', baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+
+    y=[0,1]
+    while(True):
+	    chunk = getSerialChunk(ser)
+	    print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
+
+
+def getSerialChunk(ser):
+    while True:
+        chunk = []
+        for i in range(14):
+            chunk.append(ser.read(1).encode('hex'))
+        if chunk[0][0] != '1':
+            startChunk = []
+            endChunk = []
+            for index,byte in enumerate(chunk):
+                if byte[0] == '1':
+                    startChunk = chunk[index:]
+                    endChunk = chunk[:index]
+                    chunk =  startChunk + endChunk
+        return " ".join(chunk)
 
 if __name__ == '__main__': #Allows for usage of above methods in a library
-    inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0", "1A 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0"] #Three sample outputs from serial (0.485 VOLTS;-0.485 VOLTS;025C )
+    inputs = ["12 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0", "1A 20 37 4D 5A 67 77 8F 93 AE B0 C0 D2 E0","12 20 37 4D 55 6B 73 8E 97 A8 B0 C0 D0 E0", "13 20 37 4d 57 6d 77 8d 9d ab b0 c0 d3 e0"] #Three sample outputs from serial (0.485 VOLTS;-0.485 VOLTS;025C )
     mainLoop(inputs) #Call the mainLoop method with a list containing serial data
