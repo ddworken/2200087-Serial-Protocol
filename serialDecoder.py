@@ -5,9 +5,6 @@ from time import sleep
 import serial
 import argparse
 
-
-serialPort = '/dev/ttyUSB1'
-
 class grapher(object):
     np = __import__('numpy')
     subprocess = __import__('subprocess')
@@ -293,12 +290,12 @@ def mainLoop(args):
     while(True):
         chunk = getSerialChunk(ser)
         if graph:
-	    grapher.append(float(strToDigits(chunk)))
-	    graph = grapher.getGraph()
-	    for line in graph:
-	        print line
-	else:
-	     print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
+            grapher.append(float(strToDigits(chunk)))
+            graph = grapher.getGraph()
+            for line in graph:
+                print line
+        else:
+            print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
 
 def getSerialChunk(ser):
     while True:
