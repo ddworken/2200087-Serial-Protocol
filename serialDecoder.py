@@ -314,7 +314,7 @@ def getSerialChunk(ser):
 
 if __name__ == '__main__': #Allows for usage of above methods in a library
     parser = argparse.ArgumentParser()
-    parser.add_argument("graph", help="Use this argument if you want to display a graph. ")
+    parser.add_argument("--graph", help="Use this argument if you want to display a graph. ")
     parser.add_argument("-p", "--port", help="The serial port to use", default="/dev/ttyUSB0")
     args = parser.parse_args()
     mainLoop(args) #Call the mainLoop method with a list containing serial data
