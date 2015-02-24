@@ -24,4 +24,4 @@ All bytes are sent over in hexadecimal numbered one through fourteen. Bytes 3-4 
 
 ========================
 
-serialDecoder.py is a python program to decode the serial output from this DMM. It depends on bitstring, so run ```pip install bitstring``` before trying to run it. 
+serialDecoder.py is a python program to decode the serial output from this DMM. 
