@@ -1,5 +1,7 @@
 #/bin/python
 
+serialPort = '/dev/ttyUSB1'
+
 def getArrFromStr(serialData): #converts serial data to an array of strings each of which is a binary representation of a single byte
     output = []
     inputList = serialData.split(" ")
@@ -229,7 +231,7 @@ def strToDigits(strOfBytes): #converts a string of space separated hexadecimal b
 
 def mainLoop(inputs):
     import serial
-    ser = serial.Serial(port='/dev/ttyUSB1', baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+    ser = serial.Serial(port=serialPort, baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
 
     y=[0,1]
     while(True):
