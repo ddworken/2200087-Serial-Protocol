@@ -12,7 +12,7 @@ class grapher(object):
     x = []						#a list to store 100 most recent X values in
     y = []    						#a list to sore 100 most recent Y values in
     graphSize = 100					#an integer defining the maximum number of data points to track
-    								#set graphSize to the number of seconds of data you want displayed * 10 (b/c serial sends values at 10 hz)
+    							#set graphSize to the number of seconds of data you want displayed * 10 (b/c serial sends values at 10 hz)
     def __init__(self, y):
         for i in range(self.graphSize):
             self.x.append(i)
