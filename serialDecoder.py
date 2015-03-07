@@ -19,27 +19,8 @@ class grapher(object):
         self.y = y
         self.update(self.x,self.y)
         self.graphOutput = self.getGraph()
-
-    def update(self, x, y):
-        self.x = x
-	self.y = y
-	self.gnuplot = subprocess.Popen(["/usr/bin/gnuplot"], stdin=subprocess.PIPE, stdout=subprocess.PIPE) 	#init the gnuplot variable from /usr/bin/gnuplot
-        self.gnuplot.stdin.write("set term dumb 150 25\n")							#set up gnu plot to use a textual interface output at 150*25
-        self.gnuplot.stdin.write("plot '-' using 1:2 title 'Graph' with linespoints \n")			#Set the graph title
-        for i,j in zip(x,y):
-            self.gnuplot.stdin.write("%f %f\n" % (i,j))    							#add values to the graph
-        self.gnuplot.stdin.write("e\n")										#send an end line to signify no more data points coming
-        self.gnuplot.stdin.flush()
-        i = 0
-        output = []
-        while self.gnuplot.poll() is None:									#while there are more lines in the graph
-            output.append(self.gnuplot.stdout.readline())							#add those lines to the output list
-            i+=1
-            if i == 30:
-                break
-        self.graphOutput = output
-
-    def updateWithLabel(self, x, y, label):									#reimplementation of update method to allow setting label
+        
+    def update(self, x, y, label='DMM'):									#reimplementation of update method to allow setting label
         self.x = x
         self.y = y
         self.gnuplot = subprocess.Popen(["/usr/bin/gnuplot"], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -85,7 +66,7 @@ class grapher(object):
         else:
             if len(self.x) > len(self.y):
                 self.y = np.append(self.y, yVal)
-        self.updateWithLabel(self.x, self.y, label)
+        self.update(self.x, self.y, label)
       
 
 def getArrFromStr(serialData): #converts serial data to an array of strings each of which is a binary representation of a single byte
