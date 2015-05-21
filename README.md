@@ -34,6 +34,18 @@ then run:
 sudo python serialDecoder.py -p /dev/ttyUSB0 --graph
 ```
 
+You also can read from multiple multimeters at the same time and get a CSV output like so:
+
+``` bash
+sudo python serialDecoder.py -p /dev/ttyUSB0 /dev/ttyUSB1
+```
+
+If you only want the actual values and not information about what mode the multimeter is on, use the -q flag:
+
+``` bash
+sudo python serialDecoder.py -p /dev/ttyUSB0 -q
+```
+
 #Protocol Description
 
 |         | Bit 7 | Bit 6 | Bit 5 | Bit 4 | Bit 3      | Bit 2    | Bit 1     | Bit 0    | 
