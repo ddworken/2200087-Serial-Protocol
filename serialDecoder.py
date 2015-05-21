@@ -323,7 +323,10 @@ def mainLoop(args):
 		    except:
 		        pass
 	    else:
-                print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
+		if not args.quiet:
+                    print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
+		if args.quiet:
+		    print strToDigits(chunk)
     if len(args.port) > 1:
 	if args.graph:
 	    print "This program does not support graphing two multimeters at the same time. "
@@ -340,7 +343,10 @@ def mainLoop(args):
 		data = []
 		for ser in serialPorts:
 		    chunk = getSerialChunk(ser)
-		    data.append(strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)))
+		    if not args.quiet:
+			data.append(strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)))
+		    if args.quiet:
+			data.append(strToDigits(chunk))
 		for index,datum in enumerate(data):
 		    sys.stdout.write(datum)
 		    if index != len(data)-1: 	#So that it doesn't print a , after the last element
@@ -366,5 +372,6 @@ if __name__ == '__main__': #Allows for usage of above methods in a library
     parser = argparse.ArgumentParser()
     parser.add_argument("--graph", help="Use this argument if you want to display a graph. ", action="store_true")
     parser.add_argument("-p", "--port", nargs='*', help="The serial port to use", default="/dev/ttyUSB0")
+    parser.add_argument("-q", "--quiet", help="Use this argument if you only want the numbers, not the description. ", action="store_true")
     args = parser.parse_args()
     mainLoop(args) #Call the mainLoop method with a list containing serial data
