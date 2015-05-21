@@ -4,6 +4,7 @@ from random import *
 from time import sleep
 import serial
 import argparse
+import sys
 
 class grapher(object):
     np = __import__('numpy')
@@ -297,32 +298,54 @@ def strToDigits(strOfBytes): #converts a string of space separated hexadecimal b
     return digits
 
 def mainLoop(args):
-    ser = serial.Serial(port=args.port, baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
-    global grapher 
-    y = [0]
-    grapher = grapher(y)
-    while(True):
-        chunk = getSerialChunk(ser)
-        if args.graph:
-	    try:
-	        floatVal = float(strToDigits(chunk))
-                grapher.appendWithLabel(floatVal, ' '.join(strToFlags(chunk)))
-                graph = grapher.getGraph()
-                for line in graph:
-                    print line
-            except:
-		print strToDigits(chunk)[-1]
-		try:
-		    if strToDigits(chunk)[-1] == 'C' or strToDigits(chunk)[-1] == 'F':
-			floatVal = float(strToDigits(chunk)[0:-1])
-                	grapher.appendWithLabel(floatVal, ' '.join(strToFlags(chunk)))
-                	graph = grapher.getGraph()
-                	for line in graph:
-                	    print line
-		except:
-		    pass
+    if len(args.port) == 1:
+    	ser = serial.Serial(port=args.port[0], baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
+    	global grapher 
+	grapher = grapher([0])
+    	while(True):
+            chunk = getSerialChunk(ser)
+            if args.graph:
+	    	try:
+	            floatVal = float(strToDigits(chunk))
+                    grapher.appendWithLabel(floatVal, ' '.join(strToFlags(chunk)))
+                    graph = grapher.getGraph()
+                    for line in graph:
+                        print line
+                except:
+		    print strToDigits(chunk)[-1]
+		    try:
+		    	if strToDigits(chunk)[-1] == 'C' or strToDigits(chunk)[-1] == 'F':
+			    floatVal = float(strToDigits(chunk)[0:-1])
+                	    grapher.appendWithLabel(floatVal, ' '.join(strToFlags(chunk)))
+                	    graph = grapher.getGraph()
+                	    for line in graph:
+                	    	print line
+		    except:
+		        pass
+	    else:
+                print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
+    if len(args.port) > 1:
+	if args.graph:
+	    print "This program does not support graphing two multimeters at the same time. "
 	else:
-            print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
+	    serialPorts = []
+	    for portNum in range(len(args.port)):
+		serialPorts.append(serial.Serial(port=args.port[portNum], baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False))
+	    for index,port in enumerate(args.port):
+		sys.stdout.write(port),		#We have to use sys.stdout.write() so that it doesn't print a new line after each time we write data
+		if index != len(args.port)-1: 	#So that it doesn't print a , after the last element
+		    sys.stdout.write(","),
+	    sys.stdout.write("\n")		#So of course that means we have to print a new line so it still is a csv
+	    while True:
+		data = []
+		for ser in serialPorts:
+		    chunk = getSerialChunk(ser)
+		    data.append(strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)))
+		for index,datum in enumerate(data):
+		    sys.stdout.write(datum)
+		    if index != len(data)-1: 	#So that it doesn't print a , after the last element
+		    	sys.stdout.write(",")
+		sys.stdout.write("\n")
 
 def getSerialChunk(ser):
     while True:
@@ -342,6 +365,6 @@ def getSerialChunk(ser):
 if __name__ == '__main__': #Allows for usage of above methods in a library
     parser = argparse.ArgumentParser()
     parser.add_argument("--graph", help="Use this argument if you want to display a graph. ", action="store_true")
-    parser.add_argument("-p", "--port", help="The serial port to use", default="/dev/ttyUSB0")
+    parser.add_argument("-p", "--port", nargs='*', help="The serial port to use", default="/dev/ttyUSB0")
     args = parser.parse_args()
     mainLoop(args) #Call the mainLoop method with a list containing serial data
