@@ -334,10 +334,15 @@ def mainLoop(args):
 	    serialPorts = []
 	    for portNum in range(len(args.port)):
 		serialPorts.append(serial.Serial(port=args.port[portNum], baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False))
+	    if not args.csv:
+		sys.stdout.write("| ")
 	    for index,port in enumerate(args.port):
 		sys.stdout.write(port),		#We have to use sys.stdout.write() so that it doesn't print a new line after each time we write data
-		if index != len(args.port)-1: 	#So that it doesn't print a , after the last element
-		    sys.stdout.write(","),
+		if args.csv:
+		    if index != len(args.port)-1: 	#So that it doesn't print a , after the last element
+		    	sys.stdout.write(","),
+	    	if not args.csv:
+		    sys.stdout.write(" | ")
 	    sys.stdout.write("\n")		#So of course that means we have to print a new line so it still is a csv
 	    while True:
 		data = []
@@ -347,10 +352,15 @@ def mainLoop(args):
 			data.append(strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)))
 		    if args.quiet:
 			data.append(strToDigits(chunk))
+		if not args.csv:
+		    sys.stdout.write("| ")
 		for index,datum in enumerate(data):
 		    sys.stdout.write(datum)
-		    if index != len(data)-1: 	#So that it doesn't print a , after the last element
-		    	sys.stdout.write(",")
+		    if args.csv:
+		    	if index != len(data)-1: 	#So that it doesn't print a , after the last element
+		    	    sys.stdout.write(",")
+		    if not args.csv:
+			sys.stdout.write(" | ")
 		sys.stdout.write("\n")
 
 def getSerialChunk(ser):
@@ -373,5 +383,6 @@ if __name__ == '__main__': #Allows for usage of above methods in a library
     parser.add_argument("--graph", help="Use this argument if you want to display a graph. ", action="store_true")
     parser.add_argument("-p", "--port", nargs='*', help="The serial port to use", default="/dev/ttyUSB0")
     parser.add_argument("-q", "--quiet", help="Use this argument if you only want the numbers, not the description. ", action="store_true")
+    parser.add_argument("-c", "--csv", help="Use this argument to enable csv output", action="store_true")
     args = parser.parse_args()
     mainLoop(args) #Call the mainLoop method with a list containing serial data
