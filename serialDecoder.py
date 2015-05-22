@@ -302,6 +302,10 @@ def mainLoop(args):
     	ser = serial.Serial(port=args.port[0], baudrate=2400, bytesize=8, parity='N', stopbits=1, timeout=5, xonxoff=False, rtscts=False, dsrdtr=False)
     	global grapher 
 	grapher = grapher([0])
+	if args.csv:
+	    print args.port[0] + ','
+	if not args.csv:
+	    print "| " + args.port[0] + " |"
     	while(True):
             chunk = getSerialChunk(ser)
             if args.graph:
@@ -323,10 +327,16 @@ def mainLoop(args):
 		    except:
 		        pass
 	    else:
-		if not args.quiet:
-                    print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk))
-		if args.quiet:
-		    print strToDigits(chunk)
+		if args.csv:
+		    if not args.quiet:
+                    	print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)) + ","
+		    if args.quiet:
+		    	print strToDigits(chunk) + ","
+		if not args.csv:
+		    if not args.quiet:
+                        print "| " + strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)) + " |"
+                    if args.quiet:
+                        print "| " + strToDigits(chunk) + " |"
     if len(args.port) > 1:
 	if args.graph:
 	    print "This program does not support graphing two multimeters at the same time. "
