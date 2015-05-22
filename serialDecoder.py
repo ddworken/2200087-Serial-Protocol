@@ -327,16 +327,19 @@ def mainLoop(args):
 		    except:
 		        pass
 	    else:
-		if args.csv:
-		    if not args.quiet:
-                    	print strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)) + ","
-		    if args.quiet:
-		    	print strToDigits(chunk) + ","
-		if not args.csv:
-		    if not args.quiet:
-                        print "| " + strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)) + " |"
-                    if args.quiet:
-                        print "| " + strToDigits(chunk) + " |"
+		digits = strToDigits(chunk)
+		flags = ' '.join(strToFlags(chunk))
+		if "None" not in digits:
+		    if args.csv:
+		        if not args.quiet:
+                    	    print digits + ' ' + flags + ","
+		        if args.quiet:
+		    	    print digits + ","
+		    if not args.csv:
+		        if not args.quiet:
+                            print "| " + digits + ' ' + flags + " |"
+                        if args.quiet:
+                            print "| " + digits + " |"
     if len(args.port) > 1:
 	if args.graph:
 	    print "This program does not support graphing two multimeters at the same time. "
@@ -362,16 +365,17 @@ def mainLoop(args):
 			data.append(strToDigits(chunk) + ' ' + ' '.join(strToFlags(chunk)))
 		    if args.quiet:
 			data.append(strToDigits(chunk))
-		if not args.csv:
-		    sys.stdout.write("| ")
-		for index,datum in enumerate(data):
-		    sys.stdout.write(datum)
-		    if args.csv:
-		    	if index != len(data)-1: 	#So that it doesn't print a , after the last element
-		    	    sys.stdout.write(",")
+		if not any("None" in s for s in data):
 		    if not args.csv:
-			sys.stdout.write(" | ")
-		sys.stdout.write("\n")
+                    	sys.stdout.write("| ")
+		    for index,datum in enumerate(data):
+		        sys.stdout.write(datum)
+		        if args.csv:
+		    	    if index != len(data)-1: 	#So that it doesn't print a , after the last element
+		    	        sys.stdout.write(",")
+		    	if not args.csv:
+			    sys.stdout.write(" | ")
+		    sys.stdout.write("\n")
 
 def getSerialChunk(ser):
     while True:
